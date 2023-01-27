@@ -1,0 +1,51 @@
+PLAN DE ACCION:
+
+- Crear DIVS:
+    - Nombre / logo
+    - Instrucciones (Que hace cada torre/enemigo)
+    - Botones (mouse)
+
+- Crear Canvas (GUI)
+
+//////////////////////////////////////////////////////////////
+
+- Crear background (obj)
+- Crear rondas (obj)
+    - Establecer un tiempo para cada ronda
+    - Salen XX enemigos cada XX tiempo
+    - Incrementar # de enemigos por ronda
+    - Salen mas "tipos" de enemigos por ronda
+- Enemy Density (obj) -> mas enemigos si la ronda y/o nivel es mayor
+- Gameover (obj) -> clear interval
+    - If (lives === 0) {Gameover}
+    - Pop-up diciendo que perdiste y boton para reiniciar
+
+//////////////////////////////////////////////////////////////
+
+- Crear torres (class Player)
+    - Health (General) -> Contador
+        - Show remaining lives
+    - Damage per hit (Towers)
+    - Shooting rate (Towers)
+    - Position (Towers)
+    - Size (Towers)
+    - Cost (Towers)
+
+- Crear balas (class Bullets)
+    - Size
+    - Position
+
+//////////////////////////////////////////////////////////////
+
+- Crear enemigos (class Enemies)
+    - Health
+        - Show health-bar
+    - Speed
+    - Kill reward
+    - Size
+    - Position
+
+//////////////////////////////////////////////////////////////
+
+
+No intervalos dentro de intervalos -> if (frameRate % XX === 0) {Pasa algo}
