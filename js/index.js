@@ -1,1 +1,1 @@
-IronDefense.init()
+window.onload = () => IronDefense.init()

@@ -15,7 +15,9 @@ PLAN DE ACCION:
     - Salen XX enemigos cada XX tiempo
     - Incrementar # de enemigos por ronda
     - Salen mas "tipos" de enemigos por ronda
+
 - Enemy Density (obj) -> mas enemigos si la ronda y/o nivel es mayor
+
 - Gameover (obj) -> clear interval
     - If (lives === 0) {Gameover}
     - Pop-up diciendo que perdiste y boton para reiniciar
