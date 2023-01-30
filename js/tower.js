@@ -1,37 +1,52 @@
 class Tower {
-    constructor(ctx, towerDmg, shotRate, towerPos, towerSize, towerCost, bulletType) {
+
+    constructor(ctx, fraction, framesCounter, towerType, towerPosX, towerPosY) {
+        // Valores traidos de App
         this.ctx = ctx
-        this.towerDmg = undefined
-        this.shotRate = undefined
-        this.towerPos = { x: undefined, y: undefined }
-        this.towerSize = { w: undefined, h: undefined }
-        this.towerCost = undefined
-        this.bulletType = undefined
+        this.fraction = fraction
+        this.framesCounter = framesCounter
+        this.bullets = []
+
+        // Types of Towers
+        if (towerType === 'tower1') {
+            // normal damage, fast rate
+            // this.towerDmg = 40
+            // this.shotRate = undefined
+            // this.towerCost = undefined
+            // this.bulletType = normal
+        }
+
+        if (towerType === 'tower2') {
+            // high damage, slow rate
+            // this.towerDmg = 90
+            // this.shotRate = undefined
+            // this.towerCost = undefined
+            // this.bulletType = sniper
+        }
+
+        if (towerType === 'tower3') {
+            // high damage, normal rate
+            // this.towerDmg = 80
+            // this.shotRate = undefined
+            // this.towerCost = undefined
+            // this.bulletType = heavy
+        }
+
+        // Valores definidos en cada funcion de cada torre
+        this.towerPosX = towerPosX
+        this.towerPosY = towerPosY
+        this.towerSizeW = undefined
+        this.towerSizeH = undefined
     }
 
-    drawTower() {
+    draw() {
+        // TEMPORAL
         this.ctx.fillStyle = '#FFB300' // Naranja - Torre 1 en Map
-        this.ctx.fillRect(64, 64, 64, 64)
-        // this.ctx.beginPath()
-        // this.ctx.arc(x, y, 0, Math.PI * 2)
-        // this.ctx.fill()
-        // this.ctx.stroke()
+        this.ctx.fillRect(this.towerPosX, this.towerPosY, 64, 64)
     }
 
-    regularTower() {
-        this.towerDmg = 30
-        this.shotRate =
-            this.towerPos = { x: undefined/* event listener donde se hace click */, y: undefined /* event listener donde se hace click */ }
-        this.towerSize = { w: undefined, h: undefined }
-        this.towerCost = undefined
-        this.bulletType = undefined
+
+    generateBullets() {
+        this.bullets.push(new Bullets(ctx, canvasSize))
     }
-
-    // mediumTower() {
-    // }
-
-    // strongTower() {
-    // }
-
-
 }
