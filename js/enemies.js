@@ -13,7 +13,6 @@ class Enemy {
             this.enemyReward = 5
             this.enemySpeed = 5
         }
-
         if (enemyType === 'regular') {
             // normal health, normal speed
             this.enemySize = { w: 20, h: 20 }
@@ -21,7 +20,6 @@ class Enemy {
             this.enemyReward = 3
             this.enemySpeed = 4
         }
-
         if (enemyType === 'strong') {
             // high health, low speed
             this.enemySize = { w: 30, h: 30 }
@@ -29,7 +27,6 @@ class Enemy {
             this.enemyReward = 8
             this.enemySpeed = 2
         }
-
         if (enemyType === 'boss') {
             // high health, low speed
             this.enemySize = { w: 50, h: 50 }
@@ -55,7 +52,7 @@ class Enemy {
         this.enemyPos.x += this.enemySpeed
     }
 
-    draw() {
+    drawE() {
         this.enemyMove()
         // TEMPORAL
         this.ctx.fillStyle = 'blue' // Rosa - Enemigo 1 en Map

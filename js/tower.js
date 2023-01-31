@@ -1,52 +1,78 @@
 class Tower {
 
-    constructor(ctx, fraction, framesCounter, towerType, towerPosX, towerPosY) {
+    constructor(ctx, fraction, towerType, clickPosX, clickPosY, towerDir) {
         // Valores traidos de App
         this.ctx = ctx
         this.fraction = fraction
-        this.framesCounter = framesCounter
+
         this.bullets = []
 
-        // Types of Towers
-        if (towerType === 'tower1') {
-            // normal damage, fast rate
-            // this.towerDmg = 40
-            // this.shotRate = undefined
-            // this.towerCost = undefined
-            // this.bulletType = normal
-        }
-
-        if (towerType === 'tower2') {
-            // high damage, slow rate
-            // this.towerDmg = 90
-            // this.shotRate = undefined
-            // this.towerCost = undefined
-            // this.bulletType = sniper
-        }
-
-        if (towerType === 'tower3') {
-            // high damage, normal rate
-            // this.towerDmg = 80
-            // this.shotRate = undefined
-            // this.towerCost = undefined
-            // this.bulletType = heavy
-        }
+        this.towerType = towerType
+        this.towerDir = towerDir
 
         // Valores definidos en cada funcion de cada torre
-        this.towerPosX = towerPosX
-        this.towerPosY = towerPosY
-        this.towerSizeW = undefined
-        this.towerSizeH = undefined
+        this.towerSizeW = 64
+        this.towerSizeH = 64
+        this.towerPosX = clickPosX - this.towerSizeW / 2
+        this.towerPosY = clickPosY - this.towerSizeH / 2
+        this.bulletPosX = clickPosX
+        this.bulletPosY = clickPosY
+
+        // Types of Bullets
+        if (towerType === 'tower1') {
+            this.bulletType = 'bullet1'
+            // normal damage, fast rate
+            // this.towerDmg = 40
+            this.shootRate = 1000
+            // this.towerCost = undefined
+        }
+
+        if (this.towerType === 'tower2') {
+            this.bulletType = 'bullet2'
+            // normal damage, fast rate
+            // this.towerDmg = 40
+            this.shootRate = 1000
+            // this.towerCost = undefined
+        }
+
+        if (this.towerType === 'tower3') {
+            this.bulletType = 'bullet3'
+            // normal damage, fast rate
+            // this.towerDmg = 40
+            this.shootRate = 1000
+            // this.towerCost = undefined
+        }
+        this.shootB()
     }
 
-    draw() {
-        // TEMPORAL
-        this.ctx.fillStyle = '#FFB300' // Naranja - Torre 1 en Map
-        this.ctx.fillRect(this.towerPosX, this.towerPosY, 64, 64)
+    drawT() {
+        // Types of Towers
+        if (this.towerType === 'tower1') {
+            this.ctx.fillStyle = 'orange'
+            this.ctx.fillRect(this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+        }
+        if (this.towerType === 'tower2') {
+            this.ctx.fillStyle = 'yellow'
+            this.ctx.fillRect(this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+        }
+        if (this.towerType === 'tower3') {
+            this.ctx.fillStyle = 'pink'
+            this.ctx.fillRect(this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+        }
+        this.bullets.forEach(elm => elm.drawB())
     }
 
+    shootB() {
+        setInterval(() => {
+            this.bullets.push(new Bullets(this.ctx, this.fraction, this.bulletPosX, this.bulletPosY, this.towerDir, this.bulletType))
+        }, this.shootRate)
+    }
 
-    generateBullets() {
-        this.bullets.push(new Bullets(ctx, canvasSize))
+    endBullet() {
+        // this.bullets.forEach(elm => {
+        if (this.bulletPosY >= this.fraction * 10) {
+            console.log('llego!')
+        }
+        // })
     }
 }

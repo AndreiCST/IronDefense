@@ -8,7 +8,7 @@ img {
 }
 
 canvas {
-    background-color: red;
+    background-color: lightgreen;
 }
 
 .mouse-icon {
@@ -22,8 +22,4 @@ canvas {
 
 .bottomSection {
     height: 15%;
-}
-
-button {
-    background-color: lightgreen;
 }

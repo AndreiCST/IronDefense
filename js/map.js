@@ -7,7 +7,7 @@ class Map {
         this.fraction = fraction
     }
 
-    draw() { /* fillRect(X, Y, W, H) */
+    drawM() { /* fillRect(X, Y, W, H) */
         this.ctx.fillStyle = '#3A831D' // Verde - Place towers
         this.ctx.fillRect(0, 0, this.canvasSize.w, this.fraction * 6)
         // console.log(`bgSection * 4: ${this.bgSection * 4}`)
