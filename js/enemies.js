@@ -4,6 +4,7 @@ class Enemy {
         // Values from App
         this.ctx = ctx
         this.fraction = fraction
+        this.enemyType = enemyType
 
         // Types of Enemies
         if (enemyType === 'fast') {
@@ -30,7 +31,7 @@ class Enemy {
         if (enemyType === 'boss') {
             // high health, low speed
             this.enemySize = { w: 50, h: 50 }
-            this.enemyHealth = 200
+            this.enemyHealth = 600
             this.enemyReward = 15
             this.enemySpeed = 1
         }
@@ -53,9 +54,22 @@ class Enemy {
     }
 
     drawE() {
+        if (this.enemyType === 'fast') {
+            this.ctx.fillStyle = 'blue'
+            this.ctx.fillRect(this.enemyPos.x, this.enemyPos.y, this.enemySize.w, this.enemySize.h)
+        }
+        if (this.enemyType === 'regular') {
+            this.ctx.fillStyle = 'red'
+            this.ctx.fillRect(this.enemyPos.x, this.enemyPos.y, this.enemySize.w, this.enemySize.h)
+        }
+        if (this.enemyType === 'strong') {
+            this.ctx.fillStyle = 'purple'
+            this.ctx.fillRect(this.enemyPos.x, this.enemyPos.y, this.enemySize.w, this.enemySize.h)
+        }
+        if (this.enemyType === 'boss') {
+            this.ctx.fillStyle = 'black'
+            this.ctx.fillRect(this.enemyPos.x, this.enemyPos.y, this.enemySize.w, this.enemySize.h)
+        }
         this.enemyMove()
-        // TEMPORAL
-        this.ctx.fillStyle = 'blue' // Rosa - Enemigo 1 en Map
-        this.ctx.fillRect(this.enemyPos.x, this.enemyPos.y, this.enemySize.w, this.enemySize.h)
     }
 }

@@ -1,65 +1,77 @@
 class Tower {
 
-    constructor(ctx, fraction, towerType, clickPosX, clickPosY, towerDir) {
+    constructor(ctx, fraction, framesCounter, clickPosX, clickPosY, towerType, towerDir) {
         // Valores traidos de App
         this.ctx = ctx
         this.fraction = fraction
 
-        this.bullets = []
-
-        this.towerType = towerType
-        this.towerDir = towerDir
-
-        // Valores definidos en cada funcion de cada torre
-        this.towerSizeW = 64
-        this.towerSizeH = 64
+        this.towerSizeW = this.fraction * 2
+        this.towerSizeH = this.fraction * 2
         this.towerPosX = clickPosX - this.towerSizeW / 2
         this.towerPosY = clickPosY - this.towerSizeH / 2
         this.bulletPosX = clickPosX
         this.bulletPosY = clickPosY
 
-        // Types of Bullets
+        this.timeOfCreation = framesCounter
+        this.towerType = towerType
+        this.towerDir = towerDir
+        this.bullets = []
+
+        this.image = new Image()
+
+        // Types of towers
         if (towerType === 'tower1') {
             this.bulletType = 'bullet1'
-            // normal damage, fast rate
-            // this.towerDmg = 40
-            this.shootRate = 1000
-            // this.towerCost = undefined
+            this.shootRate = 60
+            this.towerCost = 30
         }
-
         if (this.towerType === 'tower2') {
             this.bulletType = 'bullet2'
-            // normal damage, fast rate
-            // this.towerDmg = 40
-            this.shootRate = 1000
-            // this.towerCost = undefined
+            this.shootRate = 30
+            this.towerCost = 60
         }
-
         if (this.towerType === 'tower3') {
             this.bulletType = 'bullet3'
-            // normal damage, fast rate
-            // this.towerDmg = 40
-            this.shootRate = 1000
-            // this.towerCost = undefined
+            this.shootRate = 30
+            this.towerCost = 100
         }
-        this.shootB()
     }
 
-    drawT() {
+    drawT(framesCounter) {
         // Types of Towers
+        this.bullets.forEach(elm => elm.drawB())
+        this.shootB(framesCounter)
         if (this.towerType === 'tower1') {
-            this.ctx.fillStyle = 'orange'
-            this.ctx.fillRect(this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            if (this.towerDir === 'shootDown') {
+                this.image.src = './assets/TowerPack/tower1D.gif'
+                this.ctx.drawImage(this.image, this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            }
+            if (this.towerDir === 'shootUp') {
+                this.image.src = './assets/TowerPack/tower1.gif'
+                this.ctx.drawImage(this.image, this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            }
         }
         if (this.towerType === 'tower2') {
-            this.ctx.fillStyle = 'yellow'
-            this.ctx.fillRect(this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            if (this.towerDir === 'shootDown') {
+                this.image.src = './assets/TowerPack/tower2D.gif'
+                this.ctx.drawImage(this.image, this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            }
+            if (this.towerDir === 'shootUp') {
+                this.image.src = './assets/TowerPack/tower2.gif'
+                this.ctx.drawImage(this.image, this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            }
         }
         if (this.towerType === 'tower3') {
-            this.ctx.fillStyle = 'pink'
-            this.ctx.fillRect(this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            if (this.towerDir === 'shootDown') {
+                this.image.src = './assets/TowerPack/tower3D.gif'
+                this.ctx.drawImage(this.image, this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            }
+            if (this.towerDir === 'shootUp') {
+                this.image.src = './assets/TowerPack/tower3.gif'
+                this.ctx.drawImage(this.image, this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+            }
         }
-        this.bullets.forEach(elm => elm.drawB())
+        this.endBullet()
     }
 
     shootB() {
@@ -68,11 +80,21 @@ class Tower {
         }, this.shootRate)
     }
 
-    endBullet() {
-        // this.bullets.forEach(elm => {
-        if (this.bulletPosY >= this.fraction * 10) {
-            console.log('llego!')
+    shootB(framesCounter) {
+        console.log(framesCounter, this.timeOfCreation)
+        if ((framesCounter + this.timeOfCreation) % this.shootRate === 0) {
+            this.bullets.push(new Bullets(this.ctx, this.fraction, this.bulletPosX, this.bulletPosY, this.towerDir, this.bulletType))
         }
-        // })
+    }
+
+    endBullet() {
+        this.bullets.forEach(elm => {
+            if (this.towerDir === 'shootDown') {
+                this.bullets = this.bullets.filter(elm2 => elm2.bulletPosY <= this.fraction * 10 - elm.bulletH)
+            }
+            if (this.towerDir === 'shootUp') {
+                this.bullets = this.bullets.filter(elm2 => elm2.bulletPosY >= this.fraction * 6)
+            }
+        })
     }
 }

@@ -1,7 +1,7 @@
 const IronDefense = {
-    title: 'Iron Defence',
+    title: 'Iron Defense',
     description: 'The Best Tower Defense Game made in Vanilla JavaScript',
-    authors: 'Andrei & Daniel',
+    authors: 'Andrei Costea & Daniel Salomon',
     license: undefined,
     version: '1.0.0',
     canvasTag: undefined,
@@ -14,19 +14,28 @@ const IronDefense = {
         ONE: 'Digit1', // Keyboard 1
         TWO: 'Digit2', // Keyboard 2
         THREE: 'Digit3', // Keyboard 3
-        FIVE: 'Digit5', // Keyboard 5
+        PAUSE: 'KeyP', // Keyboard P
     },
+    gamePaused: false,
+
+    lives: 20,
     map: undefined,
     towers: [],
-    selectedTower: 'tower1',
+    selectedTower: '',
     enemies: [],
+    coins: 1000,
+    towerCost: {
+        tower1: 30,
+        tower2: 50,
+        tower3: 100
+    },
 
     // SETTINGS
     init() {
         this.setContext()
         this.setDimensions()
         this.start()
-        this.selectTower()
+        this.actions()
         this.generateTower()
     },
 
@@ -46,13 +55,15 @@ const IronDefense = {
     start() {
         alert('PRESS TO START')
         setInterval(() => {
-
-            this.framesCounter > 5000 ? this.framesCounter = 0 : this.framesCounter++
-            // if (this.pauseGame) { this.pauseGame() }
-            this.clearAll()
-            this.drawAll()
-            this.generateEnemies()
+            if (!this.gamePaused) {
+                this.framesCounter > 5000 ? this.framesCounter = 0 : this.framesCounter++
+                this.clearAll()
+                this.drawAll()
+                this.generateEnemies()
+                this.gameOver()
+            }
         }, 1000 / this.FPS)
+
     },
 
     drawAll() {
@@ -60,34 +71,38 @@ const IronDefense = {
         this.drawEnemies()
         this.drawTower()
         this.checkCollision()
+
+        console.log(this.coins)
+        // console.log(this.fraction)
     },
 
     clearAll() {
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h)
     },
 
-    // PAUSE
-    // pauseGame() {
-    //     document.onkeydown = event => {
-    //         if (event.code === this.keys.FIVE) {
-    //             alert('GAME PAUSED')
-    //         }
-    //         return true
-    //     }
-    // },
+    actions() {
+        if (!this.gamePaused) {
+            document.onkeyup = event => {
+                this.selectTower(event)
+            }
+            document.onkeydown = event => {
+                this.gamePause(event)
+            }
+        }
+    },
 
-    // GAME OVER
-    // takeLife() {
-    //     if (bulletCollision) {
-    //         lives--
-    //     }
-    // },
+    gamePause(event) {
+        if (event.code === this.keys.PAUSE) {
+            this.gamePaused = !this.gamePaused
+        }
+        console.log('testing pause', this.gamePaused)
+    },
 
-    // gameOver() {
-    // if (lives === 0) {
-    //     loose
-    // }
-    // },
+    gameOver() {
+        if (this.lives <= 0) {
+            alert('PERDISTE')
+        }
+    },
 
     // MAP
     drawMap() {
@@ -96,12 +111,10 @@ const IronDefense = {
     },
 
     // TOWERS
-    selectTower() {
-        document.onkeydown = event => {
-            if (event.code === this.keys.ONE) this.selectedTower = 'tower1'
-            if (event.code === this.keys.TWO) this.selectedTower = 'tower2'
-            if (event.code === this.keys.THREE) this.selectedTower = 'tower3'
-        }
+    selectTower(event) {
+        if (event.code === this.keys.ONE && this.coins >= this.towerCost.tower1) this.selectedTower = 'tower1'
+        if (event.code === this.keys.TWO && this.coins >= this.towerCost.tower2) this.selectedTower = 'tower2'
+        if (event.code === this.keys.THREE && this.coins >= this.towerCost.tower3) this.selectedTower = 'tower3'
     },
 
     generateTower() {
@@ -110,32 +123,47 @@ const IronDefense = {
             let clickPosY = event.offsetY
             if (clickPosY < this.fraction * 6 - 32) {
                 let towerDir = 'shootDown'
-                this.towers.push(new Tower(this.ctx, this.fraction, this.selectedTower, clickPosX, clickPosY, towerDir))
+                this.towers.push(new Tower(this.ctx, this.fraction, this.framesCounter, clickPosX, clickPosY, this.selectedTower, towerDir))
             }
             if (clickPosY > this.fraction * 10 + 32) {
                 let towerDir = 'shootUp'
-                this.towers.push(new Tower(this.ctx, this.fraction, this.selectedTower, clickPosX, clickPosY, towerDir))
+                this.towers.push(new Tower(this.ctx, this.fraction, this.framesCounter, clickPosX, clickPosY, this.selectedTower, towerDir))
             }
+
+            if (this.selectedTower === 'tower1') {
+                this.coins -= this.towerCost.tower1
+            }
+            if (this.selectedTower === 'tower2') {
+                this.coins -= this.towerCost.tower2
+            }
+            if (this.selectedTower === 'tower3') {
+                this.coins -= this.towerCost.tower3
+            }
+
+            console.log(`Selected Tower: ${this.selectedTower}`)
+            this.selectedTower = ''
+            console.log(`Selected Tower: ${this.selectedTower}`)
         })
     },
 
+
     drawTower() {
-        this.towers.forEach(elm => elm.drawT())
+        this.towers.forEach(elm => elm.drawT(this.framesCounter))
     },
 
     // ENEMIES
     generateEnemies() {
         if (this.enemies.length <= 40) {
-            if (this.framesCounter % 50 === 0) {
+            if (this.framesCounter % 100 === 0) {
                 this.enemies.push(new Enemy(this.ctx, this.fraction, 'regular'))
             }
-            if (this.framesCounter % 50 === 0) {
+            if (this.framesCounter % 200 === 0) {
                 this.enemies.push(new Enemy(this.ctx, this.fraction, 'fast'))
             }
-            if (this.framesCounter % 50 === 0) {
+            if (this.framesCounter % 300 === 0) {
                 this.enemies.push(new Enemy(this.ctx, this.fraction, 'strong'))
             }
-            if (this.framesCounter % 200 === 0) {
+            if (this.framesCounter % 1000 === 0) {
                 this.enemies.push(new Enemy(this.ctx, this.fraction, 'boss'))
             }
         }
@@ -145,13 +173,17 @@ const IronDefense = {
         this.enemies.forEach(elm => elm.drawE())
     },
 
+    doEnemyDmg(enemy, bullet) {
+        enemy.enemyHealth -= bullet.bulletDmg
+        if (enemy.enemyHealth <= 0) {
+            this.clearEnemy(enemy)
+            this.coins += enemy.enemyReward
+        }
+    },
+
     clearEnemy(enemy) {
         this.enemies = this.enemies.filter(elem => elem !== enemy)
     },
-
-    // clearBullet(towerArray, bullet) {
-    //     towerArray = towerArray.filter(elem => elem !== bullet)
-    // },
 
     // COLLISIONS
     checkCollision() {
@@ -168,31 +200,49 @@ const IronDefense = {
                     enemy.enemyPos.y < bullet.bulletPosY + bullet.bulletH &&
                     enemy.enemyPos.y + enemy.enemySize.h > bullet.bulletPosY
                 ) {
-                    this.clearEnemy(enemy)
-                    // this.clearBullet(tower.bullets, bullet)
+                    this.doEnemyDmg(enemy, bullet)
                     tower.bullets = tower.bullets.filter(elem => elem !== bullet)
-                    // return doDamage = true //doDamage -> quitarle health al enemy && quitar bala
                 }
             }))
         })
     },
 
     livesCollision() {
-        this.enemies = this.enemies.filter(elm => elm.enemyPos.x < this.canvasSize.w)
-    }
+        this.enemies.forEach(elem => {
+            if (elem.enemyPos.x >= this.canvasSize.w - 140) {
+                this.enemies = this.enemies.filter(elem => elem.enemyPos.x < this.canvasSize.w - 140)
+                this.lives -= 1
+                console.log('PERDISTE UNA VIDA')
+            }
+        })
+    },
+
+    // ROUNDS
+    // enemyDensity() {
+    //     // generate 10 enemies
+    //     //pause
+    //     // generate 15 enemies
+    // },
+
+    // generateEnemies() {
+    //     if (this.enemies.length <= 40) {
+    //         if (this.framesCounter % 100 * density === 0) {
+    //             this.enemies.push(new Enemy(this.ctx, this.fraction, 'regular'))
+    //         }
+    //         if (this.framesCounter % 200 * density === 0) {
+    //             this.enemies.push(new Enemy(this.ctx, this.fraction, 'fast'))
+    //         }
+    //         if (this.framesCounter % 300 * density === 0) {
+    //             this.enemies.push(new Enemy(this.ctx, this.fraction, 'strong'))
+    //         }
+    //         if (this.framesCounter % 1000 * density === 0) {
+    //             this.enemies.push(new Enemy(this.ctx, this.fraction, 'boss'))
+    //         }
+    //     }
+    // },
+
+
+
+
+
 }
-
-
-
-
-// COSAS QUE FALTAN
-
-// TIMER
-// DINERO
-// COLLISIONS
-// VIDAS
-// RONDAS
-//
-//
-//
-//

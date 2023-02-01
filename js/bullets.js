@@ -14,33 +14,44 @@ class Bullets {
         this.bulletType = bulletType
 
         this.image = new Image()
-        this.image.src = './assets/mouse.jpeg'
+
+        // Types of Bullets
+        if (this.bulletType === 'bullet1') {
+            this.bulletDmg = 30
+            this.bulletVel = 1.8
+        }
+        if (this.bulletType === 'bullet2') {
+            this.bulletDmg = 90
+            this.bulletVel = 8
+        }
+        if (this.bulletType === 'bullet3') {
+            this.bulletDmg = 60
+            this.bulletVel = 1
+        }
     }
 
     drawB() {
         if (this.bulletType === 'bullet1') {
-            // this.ctx.fillStyle = 'orange'
-            // this.ctx.fillRect(this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
-
+            this.image.src = './assets/mouse.jpeg'
             this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
         }
         if (this.bulletType === 'bullet2') {
-            this.ctx.fillStyle = 'yellow'
-            this.ctx.fillRect(this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            this.image.src = './assets/mouse.jpeg'
+            this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
         }
         if (this.bulletType === 'bullet3') {
-            this.ctx.fillStyle = 'pink'
-            this.ctx.fillRect(this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            this.image.src = './assets/mouse.jpeg'
+            this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
         }
         this.move()
     }
 
     move() {
         if (this.towerDir === 'shootDown' && this.bulletPosY < this.fraction * 10) {
-            this.bulletPosY++
+            this.bulletPosY += this.bulletVel
         }
         if (this.towerDir === 'shootUp' && this.bulletPosY > this.fraction * 6) {
-            this.bulletPosY--
+            this.bulletPosY -= this.bulletVel
         }
     }
 }
