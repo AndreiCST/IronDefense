@@ -9,7 +9,10 @@ const IronDefense = {
     canvasSize: { w: undefined, h: undefined },
     FPS: 60,
     framesCounter: 0,
+    minuteCounter: 0,
+    healthUpgrade: 1,
     fraction: undefined,
+    spawnRate: 100,
     keys: {
         ONE: 'Digit1', // Keyboard 1
         TWO: 'Digit2', // Keyboard 2
@@ -17,16 +20,18 @@ const IronDefense = {
         PAUSE: 'KeyP', // Keyboard P
     },
     gamePaused: false,
+    chao: false,
+    AUDIO: new Audio('./audio/AUDIO'),
 
-    lives: 20,
+    lives: 100,
     map: undefined,
     towers: [],
     selectedTower: '',
     enemies: [],
-    coins: 1000,
+    coins: 300,
     towerCost: {
         tower1: 30,
-        tower2: 50,
+        tower2: 60,
         tower3: 100
     },
 
@@ -45,7 +50,7 @@ const IronDefense = {
     },
 
     setDimensions() {
-        this.canvasSize = { w: window.innerWidth, h: window.innerHeight }
+        this.canvasSize = { w: window.innerWidth, h: window.innerHeight - 170 }
         this.canvasTag.setAttribute('width', this.canvasSize.w)
         this.canvasTag.setAttribute('height', this.canvasSize.h)
         this.fraction = this.canvasSize.h / 16
@@ -55,12 +60,23 @@ const IronDefense = {
     start() {
         alert('PRESS TO START')
         setInterval(() => {
-            if (!this.gamePaused) {
-                this.framesCounter > 5000 ? this.framesCounter = 0 : this.framesCounter++
-                this.clearAll()
-                this.drawAll()
-                this.generateEnemies()
-                this.gameOver()
+            if (!this.chao) {
+                if (!this.gamePaused) {
+                    if (this.framesCounter >= 3600) {
+                        this.framesCounter = 0
+                        this.minuteCounter++
+                    } else {
+                        this.framesCounter++
+                    }
+                    this.clearAll()
+                    this.drawAll()
+                    this.generateEnemies(this.spawnRate, this.minuteCounter, this.healthUpgrade)
+                    this.checkCollision()
+                    this.livesCounter()
+                    this.coinsCounter()
+                    this.enemyDensity()
+                    this.gameOver()
+                }
             }
         }, 1000 / this.FPS)
 
@@ -70,10 +86,6 @@ const IronDefense = {
         this.drawMap()
         this.drawEnemies()
         this.drawTower()
-        this.checkCollision()
-
-        console.log(this.coins)
-        // console.log(this.fraction)
     },
 
     clearAll() {
@@ -95,12 +107,11 @@ const IronDefense = {
         if (event.code === this.keys.PAUSE) {
             this.gamePaused = !this.gamePaused
         }
-        console.log('testing pause', this.gamePaused)
     },
 
     gameOver() {
         if (this.lives <= 0) {
-            alert('PERDISTE')
+            this.chao = !this.chao
         }
     },
 
@@ -124,53 +135,56 @@ const IronDefense = {
             if (clickPosY < this.fraction * 6 - 32) {
                 let towerDir = 'shootDown'
                 this.towers.push(new Tower(this.ctx, this.fraction, this.framesCounter, clickPosX, clickPosY, this.selectedTower, towerDir))
+                if (this.selectedTower === 'tower1') {
+                    this.coins -= this.towerCost.tower1
+                }
+                if (this.selectedTower === 'tower2') {
+                    this.coins -= this.towerCost.tower2
+                }
+                if (this.selectedTower === 'tower3') {
+                    this.coins -= this.towerCost.tower3
+                }
+                this.selectedTower = ''
             }
             if (clickPosY > this.fraction * 10 + 32) {
                 let towerDir = 'shootUp'
                 this.towers.push(new Tower(this.ctx, this.fraction, this.framesCounter, clickPosX, clickPosY, this.selectedTower, towerDir))
+                if (this.selectedTower === 'tower1') {
+                    this.coins -= this.towerCost.tower1
+                }
+                if (this.selectedTower === 'tower2') {
+                    this.coins -= this.towerCost.tower2
+                }
+                if (this.selectedTower === 'tower3') {
+                    this.coins -= this.towerCost.tower3
+                }
+                this.selectedTower = ''
             }
-
-            if (this.selectedTower === 'tower1') {
-                this.coins -= this.towerCost.tower1
-            }
-            if (this.selectedTower === 'tower2') {
-                this.coins -= this.towerCost.tower2
-            }
-            if (this.selectedTower === 'tower3') {
-                this.coins -= this.towerCost.tower3
-            }
-
-            console.log(`Selected Tower: ${this.selectedTower}`)
-            this.selectedTower = ''
-            console.log(`Selected Tower: ${this.selectedTower}`)
         })
     },
-
 
     drawTower() {
         this.towers.forEach(elm => elm.drawT(this.framesCounter))
     },
 
     // ENEMIES
-    generateEnemies() {
-        if (this.enemies.length <= 40) {
-            if (this.framesCounter % 100 === 0) {
-                this.enemies.push(new Enemy(this.ctx, this.fraction, 'regular'))
-            }
-            if (this.framesCounter % 200 === 0) {
-                this.enemies.push(new Enemy(this.ctx, this.fraction, 'fast'))
-            }
-            if (this.framesCounter % 300 === 0) {
-                this.enemies.push(new Enemy(this.ctx, this.fraction, 'strong'))
-            }
-            if (this.framesCounter % 1000 === 0) {
-                this.enemies.push(new Enemy(this.ctx, this.fraction, 'boss'))
-            }
+    generateEnemies(spawnRate, minute, healthUpgrade) {
+        if (this.framesCounter % spawnRate === 0) {
+            this.enemies.push(new Enemy(this.ctx, this.fraction, 'regular', healthUpgrade))
+        }
+        if (this.framesCounter % spawnRate === 0) {
+            this.enemies.push(new Enemy(this.ctx, this.fraction, 'fast', healthUpgrade))
+        }
+        if (this.framesCounter % spawnRate === 0 && minute > 1) {
+            this.enemies.push(new Enemy(this.ctx, this.fraction, 'strong', healthUpgrade))
+        }
+        if (this.framesCounter % spawnRate === 0 && minute > 2) {
+            this.enemies.push(new Enemy(this.ctx, this.fraction, 'boss', healthUpgrade))
         }
     },
 
     drawEnemies() {
-        this.enemies.forEach(elm => elm.drawE())
+        this.enemies.forEach(elm => elm.drawE(this.framesCounter))
     },
 
     doEnemyDmg(enemy, bullet) {
@@ -212,37 +226,58 @@ const IronDefense = {
             if (elem.enemyPos.x >= this.canvasSize.w - 140) {
                 this.enemies = this.enemies.filter(elem => elem.enemyPos.x < this.canvasSize.w - 140)
                 this.lives -= 1
+                // this.AUDIO.play()
+
                 console.log('PERDISTE UNA VIDA')
             }
         })
     },
 
+    livesCounter() {
+        this.ctx.fillStyle = 'white'
+        this.ctx.font = '24px sans-serif'
+        this.ctx.fillText(`Lives: ${this.lives}`, this.canvasSize.w - this.fraction * 5, this.fraction * 2)
+    },
+
+    coinsCounter() {
+        this.ctx.fillStyle = 'white'
+        this.ctx.font = '24px sans-serif'
+        this.ctx.fillText(`Coins: ${this.coins}`, this.canvasSize.w - this.fraction * 5, this.fraction)
+    },
+
     // ROUNDS
-    // enemyDensity() {
-    //     // generate 10 enemies
-    //     //pause
-    //     // generate 15 enemies
-    // },
-
-    // generateEnemies() {
-    //     if (this.enemies.length <= 40) {
-    //         if (this.framesCounter % 100 * density === 0) {
-    //             this.enemies.push(new Enemy(this.ctx, this.fraction, 'regular'))
-    //         }
-    //         if (this.framesCounter % 200 * density === 0) {
-    //             this.enemies.push(new Enemy(this.ctx, this.fraction, 'fast'))
-    //         }
-    //         if (this.framesCounter % 300 * density === 0) {
-    //             this.enemies.push(new Enemy(this.ctx, this.fraction, 'strong'))
-    //         }
-    //         if (this.framesCounter % 1000 * density === 0) {
-    //             this.enemies.push(new Enemy(this.ctx, this.fraction, 'boss'))
-    //         }
-    //     }
-    // },
-
-
-
-
-
+    enemyDensity() {
+        if (this.minuteCounter < 1) {
+            this.spawnRate * 1
+            console.log(this.healthUpgrade)
+        }
+        if (this.minuteCounter === 1) {
+            if (this.healthUpgrade === 1) {
+                this.healthUpgrade += 1
+                this.spawnRate * 0.5
+            }
+            console.log(this.healthUpgrade)
+        }
+        if (this.minuteCounter === 2) {
+            if (this.healthUpgrade === 2) {
+                this.healthUpgrade += 1
+                this.spawnRate * 0.1
+            }
+            console.log(this.healthUpgrade)
+        }
+        if (this.minuteCounter === 3) {
+            if (this.healthUpgrade === 3) {
+                this.healthUpgrade += 1
+                this.spawnRate * 0.01
+            }
+            console.log(this.healthUpgrade)
+        }
+        if (this.minuteCounter === 4) {
+            if (this.healthUpgrade === 4) {
+                this.healthUpgrade += 1
+                this.spawnRate * 0.001
+            }
+            console.log(this.healthUpgrade)
+        }
+    },
 }

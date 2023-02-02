@@ -1,24 +1,36 @@
 body {
     margin: 0;
-    padding: 0;
+
+    background: rgb(255, 255, 255);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(66, 184, 109, 1) 20%);
+
+    color: black;
 }
 
 h1 {
+    line-height: 16px;
     font-size: 24px;
+    padding-top: 8;
 }
 
 h2 {
-    font-size: 16px;
+    line-height: 24px;
+    font-size: 24px;
     font-style: bold;
+    padding-top: 4;
 }
 
 h3 {
+    line-height: 16px;
     font-size: 12px;
     font-style: oblique;
+    padding-top: 4;
 }
 
 p {
+    line-height: 24px;
     font-size: 16px;
+    padding-top: 4;
 }
 
 img {
@@ -27,15 +39,21 @@ img {
 
 canvas {
     display: block;
+    background-color: aqua;
+    border-bottom: 2px solid lightgray;
 }
 
-.mouse-icon {
-    width: 60%;
-    height: 70%;
+.enemy-icon,
+.tower-icon {
+    width: 48px;
+}
+
+.gui-icon {
+    width: 64px;
 }
 
 .topSection {
-    height: 50%;
+    height: 150px;
 }
 
 .bottomSection {

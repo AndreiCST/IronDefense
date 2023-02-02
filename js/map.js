@@ -1,35 +1,40 @@
 class Map {
-
     constructor(ctx, canvasSize, fraction) {
         // Valores traidos de App
         this.ctx = ctx
         this.canvasSize = canvasSize
         this.fraction = fraction
 
-        this.image = new Image()
+        // this.image1 = new Image()
+        // this.image1.src = './assets/TilePack/Bricks-02.png'
+
+
+        this.grass = new Image()
+        this.grass.src = './assets/grass-tile.png'
+
+        this.stone = new Image()
+        this.stone.src = './assets/stone-tile.png'
+
+        this.castle = new Image()
+        this.castle.src = './assets/castle.png'
     }
 
     drawM() { /* fillRect(X, Y, W, H) */
-        this.ctx.fillStyle = '#3A831D' // Verde - Place towers
+        const grassTiling = this.ctx.createPattern(this.grass, 'repeat')
+        this.ctx.fillStyle = grassTiling
         this.ctx.fillRect(0, 0, this.canvasSize.w, this.fraction * 6)
 
-        this.ctx.fillStyle = '#FFD593' // Beige - Enemies' path
+        const stoneTiling = this.ctx.createPattern(this.stone, 'repeat')
+        this.ctx.fillStyle = stoneTiling
         this.ctx.fillRect(0, this.fraction * 6, this.canvasSize.w, this.fraction * 4)
 
-        this.ctx.fillStyle = '#3A831D' // Verde - Place towers
+        this.ctx.fillStyle = grassTiling
         this.ctx.fillRect(0, this.fraction * 10, this.canvasSize.w, this.fraction * 6)
 
         this.drawC()
     }
 
-    drawC() { /* fillRect(X, Y, W, H) */
-        this.ctx.fillStyle = '#3A831D' // Verde - Castillo
-        this.ctx.fillRect(this.canvasSize.w - 150, this.fraction * 6 - 10, 150, this.fraction * 4 + 20)
-
-        this.ctx.fillStyle = '#FFD593' // Verde - Castillo
-        this.ctx.fillRect(this.canvasSize.w - 120, this.fraction * 6 + 40, this.fraction * 2, this.fraction * 2)
-
-        // this.image.src = './assets/TowerPack/tower1D.gif'
-        // this.ctx.drawImage(this.image, this.towerPosX, this.towerPosY, this.towerSizeW, this.towerSizeH)
+    drawC() { /* draw (img, X, Y, W, H) */
+        this.ctx.drawImage(this.castle, this.canvasSize.w - 160, (this.canvasSize.h / 2) - 60, 120, 120)
     }
 }

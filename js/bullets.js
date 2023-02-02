@@ -1,12 +1,11 @@
 class Bullets {
-
     constructor(ctx, fraction, bulletPosX, bulletPosY, towerDir, bulletType) {
         // Valores traidos de App
         this.ctx = ctx
         this.fraction = fraction
 
-        this.bulletW = 10
-        this.bulletH = 10
+        this.bulletW = this.fraction / 2
+        this.bulletH = this.fraction / 2
         this.bulletPosX = bulletPosX - this.bulletW / 2
         this.bulletPosY = bulletPosY - this.bulletH / 2
 
@@ -17,11 +16,11 @@ class Bullets {
 
         // Types of Bullets
         if (this.bulletType === 'bullet1') {
-            this.bulletDmg = 30
+            this.bulletDmg = 10
             this.bulletVel = 1.8
         }
         if (this.bulletType === 'bullet2') {
-            this.bulletDmg = 90
+            this.bulletDmg = 80
             this.bulletVel = 8
         }
         if (this.bulletType === 'bullet3') {
@@ -32,16 +31,34 @@ class Bullets {
 
     drawB() {
         if (this.bulletType === 'bullet1') {
-            this.image.src = './assets/mouse.jpeg'
-            this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            if (this.towerDir === 'shootUp') {
+                this.image.src = './assets/Bullet1-Up.png'
+                this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            }
+            if (this.towerDir === 'shootDown') {
+                this.image.src = './assets/Bullet1-Down.png'
+                this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            }
         }
         if (this.bulletType === 'bullet2') {
-            this.image.src = './assets/mouse.jpeg'
-            this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            if (this.towerDir === 'shootUp') {
+                this.image.src = './assets/Bullet2-Up.png'
+                this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            }
+            if (this.towerDir === 'shootDown') {
+                this.image.src = './assets/Bullet2-Down.png'
+                this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            }
         }
         if (this.bulletType === 'bullet3') {
-            this.image.src = './assets/mouse.jpeg'
-            this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            if (this.towerDir === 'shootUp') {
+                this.image.src = './assets/Bullet3-Up.png'
+                this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            }
+            if (this.towerDir === 'shootDown') {
+                this.image.src = './assets/Bullet3-Down.png'
+                this.ctx.drawImage(this.image, this.bulletPosX, this.bulletPosY, this.bulletW, this.bulletH)
+            }
         }
         this.move()
     }

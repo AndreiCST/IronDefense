@@ -1,5 +1,4 @@
 class Tower {
-
     constructor(ctx, fraction, framesCounter, clickPosX, clickPosY, towerType, towerDir) {
         // Valores traidos de App
         this.ctx = ctx
@@ -22,18 +21,15 @@ class Tower {
         // Types of towers
         if (towerType === 'tower1') {
             this.bulletType = 'bullet1'
-            this.shootRate = 60
-            this.towerCost = 30
+            this.shootRate = 15
         }
         if (this.towerType === 'tower2') {
             this.bulletType = 'bullet2'
-            this.shootRate = 30
-            this.towerCost = 60
+            this.shootRate = 40
         }
         if (this.towerType === 'tower3') {
             this.bulletType = 'bullet3'
-            this.shootRate = 30
-            this.towerCost = 100
+            this.shootRate = 60
         }
     }
 
@@ -74,14 +70,7 @@ class Tower {
         this.endBullet()
     }
 
-    shootB() {
-        setInterval(() => {
-            this.bullets.push(new Bullets(this.ctx, this.fraction, this.bulletPosX, this.bulletPosY, this.towerDir, this.bulletType))
-        }, this.shootRate)
-    }
-
     shootB(framesCounter) {
-        console.log(framesCounter, this.timeOfCreation)
         if ((framesCounter + this.timeOfCreation) % this.shootRate === 0) {
             this.bullets.push(new Bullets(this.ctx, this.fraction, this.bulletPosX, this.bulletPosY, this.towerDir, this.bulletType))
         }
