@@ -18,10 +18,11 @@ const IronDefense = {
         TWO: 'Digit2', // Keyboard 2
         THREE: 'Digit3', // Keyboard 3
         PAUSE: 'KeyP', // Keyboard P
+        MUSIC: 'KeyM', // Keyboard M
     },
+    musicOn: true,
     gamePaused: false,
     chao: false,
-    AUDIO: new Audio('./audio/AUDIO'),
 
     lives: 100,
     map: undefined,
@@ -101,6 +102,19 @@ const IronDefense = {
                 this.gamePause(event)
             }
         }
+        document.onkeypress = event => {
+            this.playMusic(event)
+        }
+    },
+
+    playMusic(event) {
+        const audio = document.querySelector("audio")
+        audio.loop = true
+        audio.volume = 1
+        if (event.code === this.keys.MUSIC) {
+            this.musicOn = !this.musicOn
+        }
+        this.musicOn ? audio.play() : audio.pause()
     },
 
     gamePause(event) {
@@ -175,10 +189,10 @@ const IronDefense = {
         if (this.framesCounter % spawnRate === 0) {
             this.enemies.push(new Enemy(this.ctx, this.fraction, 'fast', healthUpgrade))
         }
-        if (this.framesCounter % spawnRate === 0 && minute > 1) {
+        if (this.framesCounter % spawnRate === 0 && minute >= 1) {
             this.enemies.push(new Enemy(this.ctx, this.fraction, 'strong', healthUpgrade))
         }
-        if (this.framesCounter % spawnRate === 0 && minute > 2) {
+        if (this.framesCounter % spawnRate === 0 && minute > 1) {
             this.enemies.push(new Enemy(this.ctx, this.fraction, 'boss', healthUpgrade))
         }
     },
@@ -226,58 +240,53 @@ const IronDefense = {
             if (elem.enemyPos.x >= this.canvasSize.w - 140) {
                 this.enemies = this.enemies.filter(elem => elem.enemyPos.x < this.canvasSize.w - 140)
                 this.lives -= 1
-                // this.AUDIO.play()
 
-                console.log('PERDISTE UNA VIDA')
+                const damageAudio = new Audio('./assets/audio/damage.mp3')
+                damageAudio.play()
             }
         })
     },
 
     livesCounter() {
-        this.ctx.fillStyle = 'white'
-        this.ctx.font = '24px sans-serif'
-        this.ctx.fillText(`Lives: ${this.lives}`, this.canvasSize.w - this.fraction * 5, this.fraction * 2)
+        this.ctx.fillStyle = 'black'
+        this.ctx.font = '2em ThaleahFat'
+        this.ctx.fillText(`Lives: ${this.lives}`, this.canvasSize.w - this.fraction * 6, this.fraction)
     },
 
     coinsCounter() {
-        this.ctx.fillStyle = 'white'
-        this.ctx.font = '24px sans-serif'
-        this.ctx.fillText(`Coins: ${this.coins}`, this.canvasSize.w - this.fraction * 5, this.fraction)
+        this.ctx.fillStyle = 'black'
+        this.ctx.font = '2em ThaleahFat'
+        this.ctx.fillText(`Coins: ${this.coins}`, this.fraction, this.fraction)
     },
 
     // ROUNDS
     enemyDensity() {
         if (this.minuteCounter < 1) {
             this.spawnRate * 1
-            console.log(this.healthUpgrade)
         }
         if (this.minuteCounter === 1) {
             if (this.healthUpgrade === 1) {
                 this.healthUpgrade += 1
-                this.spawnRate * 0.5
+                this.spawnRate * 0.4
             }
-            console.log(this.healthUpgrade)
         }
         if (this.minuteCounter === 2) {
             if (this.healthUpgrade === 2) {
                 this.healthUpgrade += 1
                 this.spawnRate * 0.1
             }
-            console.log(this.healthUpgrade)
         }
         if (this.minuteCounter === 3) {
             if (this.healthUpgrade === 3) {
                 this.healthUpgrade += 1
                 this.spawnRate * 0.01
             }
-            console.log(this.healthUpgrade)
         }
         if (this.minuteCounter === 4) {
             if (this.healthUpgrade === 4) {
                 this.healthUpgrade += 1
                 this.spawnRate * 0.001
             }
-            console.log(this.healthUpgrade)
         }
     },
 }
