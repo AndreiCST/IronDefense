@@ -24,7 +24,7 @@ const IronDefense = {
     gamePaused: false,
     chao: false,
 
-    lives: 100,
+    lives: 20,
     map: undefined,
     towers: [],
     selectedTower: '',
@@ -185,15 +185,16 @@ const IronDefense = {
     generateEnemies(spawnRate, minute, healthUpgrade) {
         if (this.framesCounter % spawnRate === 0) {
             this.enemies.push(new Enemy(this.ctx, this.fraction, 'regular', healthUpgrade))
-        }
-        if (this.framesCounter % spawnRate === 0) {
             this.enemies.push(new Enemy(this.ctx, this.fraction, 'fast', healthUpgrade))
         }
         if (this.framesCounter % spawnRate === 0 && minute >= 1) {
             this.enemies.push(new Enemy(this.ctx, this.fraction, 'strong', healthUpgrade))
+            this.enemies.push(new Enemy(this.ctx, this.fraction, 'regular', healthUpgrade))
         }
         if (this.framesCounter % spawnRate === 0 && minute > 1) {
             this.enemies.push(new Enemy(this.ctx, this.fraction, 'boss', healthUpgrade))
+            this.enemies.push(new Enemy(this.ctx, this.fraction, 'regular', healthUpgrade))
+            this.enemies.push(new Enemy(this.ctx, this.fraction, 'fast', healthUpgrade))
         }
     },
 
@@ -278,13 +279,25 @@ const IronDefense = {
         }
         if (this.minuteCounter === 3) {
             if (this.healthUpgrade === 3) {
-                this.healthUpgrade += 1
+                this.healthUpgrade += 1.5
                 this.spawnRate * 0.01
             }
         }
         if (this.minuteCounter === 4) {
-            if (this.healthUpgrade === 4) {
-                this.healthUpgrade += 1
+            if (this.healthUpgrade === 4.5) {
+                this.healthUpgrade += 1.5
+                this.spawnRate * 0.01
+            }
+        }
+        if (this.minuteCounter === 5) {
+            if (this.healthUpgrade === 6) {
+                this.healthUpgrade += 2
+                this.spawnRate * 0.005
+            }
+        }
+        if (this.minuteCounter === 6) {
+            if (this.healthUpgrade === 8) {
+                this.healthUpgrade += 2
                 this.spawnRate * 0.001
             }
         }
